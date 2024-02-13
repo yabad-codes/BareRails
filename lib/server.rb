@@ -1,10 +1,13 @@
 require 'webrick'
+require_relative 'colors'
+require_relative 'app'
 
 module BareRails
 	class Server
 		def initialize(host = 'localhost', port = 3000)
 			@host = host
 			@port = port
+			@app = App.new
 		end
 
 		def start
@@ -19,7 +22,17 @@ module BareRails
 		end
 
 		def handle_request(req, res)
-			res.body = "Hello, world!"
+			env = {
+				'REQUEST_PATH' => req.path,
+				'REQUEST_METHOD' => req.request_method,
+				'PATH_INFO' => req.path,
+				'QUERY_STRING' => req.query_string,
+			}
+
+			status, headers, body = @app.call(env)
+			res.status = status
+			headers.each { |key, value| res[key] = value }
+			res.body = body.join
 		end
 	end
 end
