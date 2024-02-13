@@ -13,6 +13,6 @@ class App
 
 	private
 	def router
-		Router.instance	
+		BareRails::Router.instance
 	end
 end
