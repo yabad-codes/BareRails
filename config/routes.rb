@@ -1,8 +1,7 @@
 require_relative '../lib/router'
 
 Router.draw do
-	get('/') do |env|
-		puts "Path: #{env['REQUEST_PATH']}"
-		"Yabad's blog"
-	end
+	get('/') { "Yabad's blog" }
+	get 'articles/index'
+	get 'articles/show'
 end
