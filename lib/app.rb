@@ -6,9 +6,9 @@ class App
 			'Content-Type' => 'text/html'
 		}
 
-		response = router.build_response(env)
+		status, response = router.build_response(env)
 
-		[200, headers, [response]]
+		[status, headers, [response]]
 	end
 
 	private
