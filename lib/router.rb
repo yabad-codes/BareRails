@@ -1,5 +1,6 @@
 require 'singleton'
 require_relative '../app/controllers/articles_controller'
+require_relative '../app/controllers/application_controller'
 
 module BareRails
 	class Router
@@ -34,8 +35,14 @@ module BareRails
 
 		def build_response(env)
 			path = env['REQUEST_PATH']
-			handler = @routes[path] || ->(env) { "no routes found for #{path}" }
-			handler.call(env)
+			handler = @routes[path]
+
+			if handler
+				return 200, handler.call(env)
+			else
+				handler = ->(env) { ApplicationController.render_error(File.expand_path("../public/status.html.erb", __dir__), locals: { title: "404 Not Found", status: "404", error: "Page not found", description: "Woops, Looks like this page doesn't exist." }) }
+				return 404, handler.call(env)
+			end
 		end
 
 		private
